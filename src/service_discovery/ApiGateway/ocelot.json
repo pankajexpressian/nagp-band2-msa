@@ -1,0 +1,75 @@
+//{
+//    "GlobalConfiguration": {
+//        "BaseUrl": "http://localhost:6000",
+//        "ServiceDiscoveryProvider": {
+//            "Host": "localhost",
+//            "Port": 8761,
+//            "Type": "Eureka"
+//        }
+//    },
+//    "Routes": [
+//        {
+//            "DownstreamPathTemplate": "/api/products",
+//            "DownstreamScheme": "http",
+//            "ServiceName": "ProductService",
+//            "UpstreamPathTemplate": "/gateway/products",
+//            "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ]
+//        }
+//    ]
+//}
+
+
+
+
+
+
+
+
+
+{
+    "Routes": [
+        {
+            "Key": "GetAllProducts",
+            "DownstreamPathTemplate": "/api/products",
+            "DownstreamScheme": "http",
+            "ServiceName": "ProductService", // Eureka service name
+            "UpstreamPathTemplate": "/gateway/products",
+            "UpstreamHttpMethod": [ "GET" ],
+            "LoadBalancerOptions": {
+                "Type": "RoundRobin"
+            }
+        },
+        {
+            "Key": "ProductRoute",
+            "DownstreamPathTemplate": "/api/products/{everything}",
+            "DownstreamScheme": "http",
+            "ServiceName": "ProductService", // Eureka service name
+            "UpstreamPathTemplate": "/gateway/products/{everything}",
+            "UpstreamHttpMethod": [ "GET" ],
+            "LoadBalancerOptions": {
+                "Type": "RoundRobin"
+            }
+        },
+        {
+            "Key": "ReviewRoute",
+            "DownstreamPathTemplate": "/api/reviews/products/{everything}",
+            "DownstreamScheme": "http",
+            "ServiceName": "ReviewService", // Eureka service name
+            "UpstreamPathTemplate": "/gateway/reviews/products/{everything}",
+            "UpstreamHttpMethod": [ "GET" ]
+        }
+    ],
+    "Aggregates": [
+        {
+            "RouteKeys": [ "ProductRoute", "ReviewRoute" ],
+            "UpstreamPathTemplate": "/gateway/product-and-reviews/{everything}",
+            "UpstreamHttpMethod": [ "GET" ],
+            "Aggregator": "ProductWithReviewsAggregator"
+        }
+    ],
+    "GlobalConfiguration": {
+        "ServiceDiscoveryProvider": {
+            "Type": "Eureka"
+        }
+    }
+}
