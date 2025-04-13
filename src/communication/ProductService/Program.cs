@@ -1,3 +1,4 @@
+using MassTransit;
 using Steeltoe.Discovery.Client;
 
 namespace ProductService
@@ -19,6 +20,20 @@ namespace ProductService
                 client.BaseAddress = new Uri("http://localhost:2002/");
             });
 
+
+
+
+            builder.Services.AddMassTransit(x =>
+            {
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("localhost", "/", h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+                });
+            });
 
 
             var app = builder.Build();

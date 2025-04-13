@@ -1,5 +1,7 @@
 using System.Net.Http;
 using System.Reflection;
+using MassTransit;
+using MessageBusContracts;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +12,12 @@ namespace ProductService.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly HttpClient _httpClient;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public ProductsController(IHttpClientFactory httpClientFactory)
+        public ProductsController(IHttpClientFactory httpClientFactory, IPublishEndpoint publishEndpoint)
         {
             _httpClient = httpClientFactory.CreateClient("ReviewServiceHttpClient");
+            _publishEndpoint = publishEndpoint;
         }
 
         [HttpGet]
@@ -45,6 +49,19 @@ namespace ProductService.Controllers
             var response = await _httpClient.PostAsJsonAsync("api/reviews", productReviewDto);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
+        }
+
+        [HttpPost("{id}/add-review")]
+        public async Task<IActionResult> AddReview(ProductReviewDto productReviewDto)
+        {
+            var reviewAddedEvent = new ReviewAddedEvent
+            {
+                ProductId = productReviewDto.ProductId,
+                Comment = productReviewDto.Comment
+            };
+
+            await _publishEndpoint.Publish(reviewAddedEvent);
+            return Ok("Event published");
         }
 
 

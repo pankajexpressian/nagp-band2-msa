@@ -1,3 +1,4 @@
+using MassTransit;
 using Steeltoe.Discovery.Client;
 
 namespace ReviewService
@@ -13,6 +14,27 @@ namespace ReviewService
             builder.Services.AddControllers();
 
             builder.Services.AddDiscoveryClient();
+
+            builder.Services.AddMassTransit(x =>
+            {
+                x.AddConsumer<ReviewAddedConsumer>();
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("localhost", "/", h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+
+                    cfg.ReceiveEndpoint("review-service-queue", e =>
+                    {
+                        e.ConfigureConsumer<ReviewAddedConsumer>(context);
+                    });
+                });
+            });
+
+
 
             var app = builder.Build();
 

@@ -9,5 +9,11 @@
 	<ItemGroup>
 		<PackageReference Include="Steeltoe.Discovery.ClientCore" Version="3.2.8" />
 		<PackageReference Include="Steeltoe.Discovery.Eureka" Version="3.2.8" />
+		<PackageReference Include="MassTransit" Version="8.4.0" />
+		<PackageReference Include="MassTransit.RabbitMQ" Version="8.4.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\MessageBusContracts\MessageBusContracts.csproj" />
 	</ItemGroup>
 </Project>

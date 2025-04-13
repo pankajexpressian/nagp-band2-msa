@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 
 namespace ReviewService.Controllers
 {
@@ -15,12 +16,18 @@ namespace ReviewService.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Review> CreateProduct(Review review)
+        public ActionResult<Review> CreateProductReview(Review review)
+        {
+            AddReview(review);
+            return Created();
+        }
+
+
+        public static void AddReview(Review review)
         {
             var maxId = reviews.Max(p => p.Id) + 1;
             review.Id = maxId;
             reviews.Add(review);
-            return Created();
         }
 
         public static List<Review> reviews = new List<Review>() {
