@@ -10,6 +10,8 @@ _____________________________________________________
 ## Run Eureka Container
 
 docker run -d steeltoeoss/eureka-server -p 8761:8761
+or
+docker run -d --name eureka -p 8761:8761 steeltoeoss/eureka-server
 
 http://localhost:8761/
 _____________________________________________________
