@@ -15,9 +15,9 @@ namespace ProductService
 
             builder.Services.AddDiscoveryClient();
 
-            builder.Services.AddHttpClient("ReviewServiceHttpClient", client =>
+            builder.Services.AddHttpClient("APIGatewayClient", client =>
             {
-                client.BaseAddress = new Uri("http://localhost:2002/");
+                client.BaseAddress = new Uri("http://localhost:2000/gateway/");
             });
 
 

@@ -15,8 +15,8 @@ namespace ReviewService.Controllers
             return productReviews != null ? Ok(productReviews) : NotFound();
         }
 
-        [HttpPost]
-        public ActionResult<Review> CreateProductReview(Review review)
+        [HttpPost("products/{id}")]
+        public ActionResult<Review> CreateProductReview(int id,[FromBody]Review review)
         {
             AddReview(review);
             return Created();

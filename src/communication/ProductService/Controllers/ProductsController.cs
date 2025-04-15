@@ -4,6 +4,7 @@ using MassTransit;
 using MessageBusContracts;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using static System.Net.WebRequestMethods;
 
 namespace ProductService.Controllers
 {
@@ -11,12 +12,12 @@ namespace ProductService.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _apiGatewayHttpClient;
         private readonly IPublishEndpoint _publishEndpoint;
 
         public ProductsController(IHttpClientFactory httpClientFactory, IPublishEndpoint publishEndpoint)
         {
-            _httpClient = httpClientFactory.CreateClient("ReviewServiceHttpClient");
+            _apiGatewayHttpClient = httpClientFactory.CreateClient("APIGatewayClient");
             _publishEndpoint = publishEndpoint;
         }
 
@@ -43,16 +44,19 @@ namespace ProductService.Controllers
             return Created();
         }
 
-        [HttpPost("{id}/review")]
-        public async Task<string> CreateProductReview(ProductReviewDto productReviewDto)
+        [HttpPost("{id}/review")]   //api/products/1/review or gateway/products/1/review
+        public async Task<string> CreateProductReview(int id, [FromBody] ProductReviewDto productReviewDto)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/reviews", productReviewDto);
+            
+            //http://localhost:2000/gateway/reviews/products/{id};
+            // "/gateway/reviews/products/{everything}"
+            var response = await _apiGatewayHttpClient.PostAsJsonAsync($"reviews/products/{id}", productReviewDto);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
 
         [HttpPost("{id}/add-review")]
-        public async Task<IActionResult> AddReview(ProductReviewDto productReviewDto)
+        public async Task<IActionResult> AddReview(int id, [FromBody] ProductReviewDto productReviewDto)
         {
             var reviewAddedEvent = new ReviewAddedEvent
             {
