@@ -52,7 +52,8 @@ DEMO-1: API Gateway
 	Features - 
 		a. API Gateway Implementation using Ocelot
 		b. Composer/Aggregator Pattern Implementation 
-	C:\Users\pankajjangid\source\repos\nagp-band2-msa\src\api_gateway
+  		C. Auth at API Gateway
+	
 
 DEMO-2: Service Discovery
 		a. Service registration through Eureka
@@ -66,5 +67,5 @@ DEMO-3: Microservice Communication
 	Features:
 		a. Sync communication using HTTP Client
 		b. Async communication using Rabbit MQ Messaging
-C:\Users\pankajjangid\source\repos\nagp-band2-msa\src\communication![image](https://github.com/user-attachments/assets/f694be5b-f07d-4eea-95ba-ffc5109cdad2)
+
 
